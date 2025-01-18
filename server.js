@@ -13,17 +13,24 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
+// Validate necessary environment variables
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET || !process.env.MONGO_URL) {
+    console.error('Missing required environment variables');
+    process.exit(1);
+}
+
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/', staticRoutes);
 app.use('/auth', authRoutes);
 
 // Cloudinary Configuration
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'your-cloud-name',
-    api_key: process.env.CLOUDINARY_API_KEY || 'your-api-key',
-    api_secret: process.env.CLOUDINARY_API_SECRET || 'your-api-secret',
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
     secure: true, // Use HTTPS
 });
 
@@ -61,14 +68,15 @@ const upload = multer({
 // Routes
 // Serve the upload form
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'index.html'));  // Should point to 'docs/index.html'
 });
 app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'index.html'));
 });
 app.get('/index1', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index1.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'index1.html'));
 });
+
 // Handle image upload, upload to Cloudinary, and save to MongoDB
 app.post('/upload', upload.single('file'), async (req, res) => {
     try {
@@ -87,7 +95,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         });
         await image.save();
 
-        // Cleanup local file
+        // Cleanup local file after upload
         await fs.unlink(req.file.path);
 
         // Redirect to the gallery
@@ -107,34 +115,34 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 // Serve the gallery page
 app.get('/images', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'images.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'images.html'));
 });
 app.get('/portfolio', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'portfolio-2.html'));
-    
+    res.sendFile(path.join(__dirname, 'docs', 'portfolio-2.html'));
 });
 
 app.get('/contact', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'contact.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'contact.html'));
 });
 app.get('/service', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'service.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'service.html'));
 });
 app.get('/services', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'services.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'services.html'));
 });
 app.get('/publication', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'publication.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'publication.html'));
 });
 app.get('/blog', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'blog.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'blog.html'));
 });
 app.get('/team', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'team.html'));
+    res.sendFile(path.join(__dirname, 'docs', 'team.html'));
 });
 app.get('/404', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', '404.html'));
+    res.sendFile(path.join(__dirname, 'docs', '404.html'));
 });
+
 // Fetch all images as JSON for the frontend
 app.get('/fetch-images', async (req, res) => {
     try {
