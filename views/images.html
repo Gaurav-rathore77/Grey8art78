@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns */
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border for better visibility */
+            height: 300px; /* Fixed height for uniformity */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 200px; /* Fixed height for images */
+            object-fit: cover; /* Ensures images fill the space without distortion */
+        }
+
+        .image-card h3 {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #333; /* Text color for better contrast */
+        }
+
+        .btn-upload {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: lightcoral;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-upload:hover {
+            background-color: crimson;
+            transform: scale(1.05); /* Slight grow effect on hover */
+        }
+
+        @media (max-width: 768px) {
+            #image-gallery {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #image-gallery {
+                grid-template-columns: 1fr; /* 1 column on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Images Gallery</h1>
+    <div id="app">
+        <div id="image-gallery"></div>
+        <button class="btn-upload" onclick="window.location.href='/'">Upload More Images</button>
+    </div>
+    <script>
+        async function fetchImages() {
+            try {
+                const response = await fetch('/fetch-images'); // Fetch images from the server
+                const images = await response.json(); // Parse JSON response
+
+                const galleryContainer = document.getElementById('image-gallery');
+                galleryContainer.innerHTML = ''; // Clear the container
+
+                // Add fetched images to the gallery
+                images.forEach(image => {
+                    const imageCard = document.createElement('div');
+                    imageCard.classList.add('image-card');
+
+                    const img = document.createElement('img');
+                    img.src = image.url;
+                    img.alt = image.public_id;
+
+                    const title = document.createElement('h3');
+                    title.textContent = image.public_id;
+
+                    imageCard.appendChild(img);
+                    imageCard.appendChild(title);
+                    galleryContainer.appendChild(imageCard);
+                });
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        }
+
+        // Fetch images when the page loads
+        window.onload = fetchImages;
+    </script>
+</body>
+</html>

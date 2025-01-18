@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <style>
+        #app {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            background-color: aquamarine;
+            border: 1px solid black;
+        }
+        #form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: lightcoral;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    <div id="app">
+        <form action="/upload" method="post" enctype="multipart/form-data" id="form">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+        <h1>Welcome to My App</h1>
+        <p>Click below to log in or sign up.</p>
+        <a href="/login">Login</a> | <a href="/signup">Signup</a>
+    </div>
+</body>
+</html>
