@@ -70,13 +70,29 @@ const upload = multer({
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'index.html'));  // Should point to 'docs/index.html'
 });
+app.get('/instagram', (req, res) => {
+    res.sendFile(path.join(__dirname, 'docs', 'https://www.instagram.com/Grey8Art.official'));  // Should point to 'docs/index.html'
+});
 app.get('/index', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'index.html'));
 });
+
 app.get('/index1', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'index1.html'));
 });
+app.get('/Grey8Art.official', (req, res) => {
+    // Ensure you provide the correct path to your HTML file
+    res.sendFile(path.join(__dirname, 'index.html'));
+  });
 
+app.get('/facebook' , (req, res) => {
+    const social = "https://www.facebook.com/Grey8Art.official"
+    res.redirect(social);
+})
+app.get('/instagram' , (req, res) => {
+    const social = "https://www.instagram.com/Grey8Art.official"
+    res.redirect(social);
+})
 // Handle image upload, upload to Cloudinary, and save to MongoDB
 app.post('/upload', upload.single('file'), async (req, res) => {
     try {
